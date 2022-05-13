@@ -1,0 +1,57 @@
+
+
+<%
+
+
+
+
+
+var labels = [];
+for (var i=0; i< 12;i++) {
+  labels.push(i+1);
+}
+  //summary.colvalue.slice(0,12);
+
+var data = {
+labels: labels,
+datasets: [ {
+    label: 'Potential',
+    backgroundColor: 'rgb(255, 99, 132)',
+    borderColor: 'rgb(255, 99, 132)',
+    data: summary.rowdata[0].slice(0,12),
+    //stack: 'combined'
+  },
+  {
+    label: 'Forecast',
+    backgroundColor: 'rgb(1, 99, 2)',
+    borderColor: 'rgb(2, 99, 3)',
+    data: summary.rowdata[0].slice(12,12+12),
+    //stack: 'combined'
+  }]
+};
+
+var config = {
+type: 'bar',
+data: data,
+options: {
+  plugins: {
+    title: {
+      display: true,
+      text: 'FC'
+    },
+  },
+  responsive: true
+}
+};
+
+%>
+
+
+
+    <div style="width: 70%; height: 70%;" />
+    <canvas id="myChart"></canvas>
+    </div>
+    
+    <script>
+    var myChart1 = new Chart(document.getElementById("myChart"),<%=JSON.stringify(config)%>);
+    </script>

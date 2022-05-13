@@ -1,0 +1,222 @@
+<%function drawVert(idTable, arr) {%>
+  
+  <div class="uir-machine-table-container" id="<%=idTable%>" style="border-radius: 15px;" >
+      <table id="<%=idTable+'split'%>" width="100%" border="0" cellspacing="0" cellpadding="0" class="listtable listborder uir-list-table" style="position: relative;" <%='template="'+template+'"' %> >
+        <tbody>
+
+        <tr class="uir-machine-headerrow" id="<%=idTable+'header'%>">
+         
+              <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" 
+                   data-label="<%=resultData.colkey[i]%>"  >
+                   <div class="listheader">Month</div>
+              </td>
+              <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" 
+                   data-label="<%=resultData.colkey[i]%>"  >
+                   <div class="listheader">MCV</div>
+              </td>
+              <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" 
+                   data-label="<%=resultData.colkey[i]%>"  >
+                   <div class="listheader">NRR</div>
+              </td>
+              <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" 
+                   data-label="<%=resultData.colkey[i]%>"  >
+                   <div class="listheader">ACV</div>
+              </td>
+      </tr>
+            
+      <%
+        console.log("arr.rowData", arr.rowData)
+       for (var i = 0; i < arr.rowData.length; i++) {
+        console.log("arr.rowData "+i, arr.rowData[i])
+      %>
+      <tr  id="custpage_lista_recordrow<%=i%>"  >
+            <td class="uir-list-row-cell listtexthl"  ><%=arr.rowData[i].label%></td>
+            <td class="uir-list-row-cell listtexthl"  ><%=format.format({type:format.Type.CURRENCY, value:arr.rowData[i].marr})%></td>
+            <td class="uir-list-row-cell listtexthl"  ><%=(arr.rowData[i].nrr != null && arr.rowData[i].nrr != undefined) ? format.format({type:format.Type.PERCENT,value: Number(arr.rowData[i].nrr).toFixed(2)}):''%></td>
+            <td class="uir-list-row-cell listtexthl"  ><%=format.format({type:format.Type.CURRENCY,value:arr.rowData[i].arr})%></td>
+      </tr>
+      <% } %>
+  
+  
+      </tbody>
+      </table>
+      </div>
+
+
+      <!-- TOP Customer table start-->
+      <%
+            var allCustomers = {}
+            var productLines = {}
+            for(var r =0; r< resultData.rowdata.length; r++){
+                if(!allCustomers[ resultData.rowdata[r][0] ]){
+                    allCustomers[ resultData.rowdata[r][0]]  = {
+                        name: resultData.rowdata[r][0],
+                        Saas:0,
+                        Maintenance:0
+                    }
+                }
+                allCustomers[ resultData.rowdata[r][0] ][resultData.rowdata[r][1]] +=   resultData.rowdata[r].slice(21, 22) * 12;
+                if(!!resultData.productLineMap){
+                    if( !productLines[ resultData.productLineMap[ resultData.rowdata[r][4] ] ] ){
+                        productLines[ resultData.productLineMap[ resultData.rowdata[r][4] ] ] = {
+                            Saas:0,
+                            Maintenance:0
+                        }
+                    }
+                    productLines[ resultData.productLineMap[ resultData.rowdata[r][4] ] ][resultData.rowdata[r][1]] +=   resultData.rowdata[r].slice(21, 22) * 12;
+                }
+            }
+            var sortable = [];
+            for (c in allCustomers) sortable.push(allCustomers[c])
+            sortable.sort((a, b) => a.Saas - b.Saas || a.Maintenance - b.Maintenance);
+            sortable.reverse();
+            var top10 = sortable.slice(0, 10);
+            document.calculdatedData.top10 = top10;
+            console.log("TOP CUSTOMERS", top10);
+       %>
+        <br><br>
+        <div class="uir-machine-table-container" id="custpage_lista_topcustomer1" style="border-radius: 15px;" >
+            <table id="custpage_lista_topcustomer1split" width="100%" border="0" cellspacing="0" cellpadding="0" class="listtable listborder uir-list-table" style="position: relative;" <%='template="'+template+'"' %> >
+            <tbody>
+
+            <tr class="uir-machine-headerrow" id="custpage_lista_itemtype1header">
+
+                <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large"
+                    data-label="TOP Customers"  >
+                    <div class="listheader">TOP Customers</div>
+                </td>
+                <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large"
+                    data-label="Saas"  >
+                    <div class="listheader">Saas</div>
+                </td>
+                <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large"
+                    data-label="Maintenance"  >
+                    <div class="listheader">Maintenance</div>
+                </td>
+
+            </tr>
+
+
+            <%
+            for (tc in top10 ) {
+            %>
+
+            <tr  id="custpage_listatop10_recordrow<%=i%>"  >
+                <td class="uir-list-row-cell listtexthl"  ><%=top10[tc].name%></td>
+                <td class="uir-list-row-cell listtexthl"  ><%=format.format({type:format.Type.CURRENCY,value:top10[tc].Saas})%> </td>
+                <td class="uir-list-row-cell listtexthl"  ><%=format.format({type:format.Type.CURRENCY,value:top10[tc].Maintenance})%> </td>
+            </tr>
+            <%}%>
+
+            </tbody>
+            </table>
+        </div>
+
+      <!-- TOP Customer table end-->
+
+
+<!-- TOP NEW Customers table start-->
+<%
+    var newOnes = [];
+    for(s in sortable) {
+        if(resultData.newCustomers.indexOf(sortable[s].name) > -1) {
+            newOnes.push(sortable[s])
+        }
+    }
+    var top10new = newOnes.slice(0,10)
+    document.calculdatedData.top10new = top10new;
+%>
+<br><br>
+<div class="uir-machine-table-container" id="custpage_lista_newcustomer1" style="border-radius: 15px;" >
+    <table id="custpage_lista_newcustomer1split" width="100%" border="0" cellspacing="0" cellpadding="0" class="listtable listborder uir-list-table" style="position: relative;" <%='template="'+template+'"' %> >
+    <tbody>
+
+    <tr class="uir-machine-headerrow" id="custpage_lista_newcust1header">
+
+        <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large"
+            data-label="NEW Customers"  >
+            <div class="listheader">NEW Customers</div>
+        </td>
+        <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large"
+            data-label="Saas"  >
+            <div class="listheader">Saas</div>
+        </td>
+        <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large"
+            data-label="Maintenance"  >
+            <div class="listheader">Maintenance</div>
+        </td>
+
+    </tr>
+
+
+    <%
+    for (tnc in top10new ) {
+    %>
+
+    <tr  id="custpage_listatop10new_recordrow<%=i%>"  >
+        <td class="uir-list-row-cell listtexthl"  ><%=top10new[tnc].name%></td>
+        <td class="uir-list-row-cell listtexthl"  ><%=format.format({type:format.Type.CURRENCY,value:top10new[tnc].Saas})%> </td>
+        <td class="uir-list-row-cell listtexthl"  ><%=format.format({type:format.Type.CURRENCY,value:top10new[tnc].Maintenance})%> </td>
+    </tr>
+    <%}%>
+
+    </tbody>
+    </table>
+</div>
+
+<!-- TOP NEW Customer table end-->
+
+
+      <!-- Product linee table start-->
+        <%
+            console.log("productLines", productLines)
+            document.calculdatedData.productLines = productLines;
+            if( Object.keys(productLines).length > 0  ){
+        %>
+        <br><br>
+        <div class="uir-machine-table-container" id="custpage_lista_productline1" style="border-radius: 15px;" >
+            <table id="custpage_lista_productline1split" width="100%" border="0" cellspacing="0" cellpadding="0" class="listtable listborder uir-list-table" style="position: relative;" <%='template="'+template+'"' %> >
+            <tbody>
+
+            <tr class="uir-machine-headerrow" id="custpage_lista_productline1header">
+
+                <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large"
+                    data-label="Product lines"  >
+                    <div class="listheader">Product lines</div>
+                </td>
+                <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large"
+                    data-label="Saas"  >
+                    <div class="listheader">Saas</div>
+                </td>
+                <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large"
+                    data-label="Maintenance"  >
+                    <div class="listheader">Maintenance</div>
+                </td>
+
+            </tr>
+
+            <%
+            for (pl in productLines ) {
+            %>
+
+            <tr  id="custpage_listaproductline_recordrow<%=i%>"  >
+                <td class="uir-list-row-cell listtexthl"  ><%=pl%></td>
+                <td class="uir-list-row-cell listtexthl"  ><%=format.format({type:format.Type.CURRENCY,value:productLines[pl].Saas})%> </td>
+                <td class="uir-list-row-cell listtexthl"  ><%=format.format({type:format.Type.CURRENCY,value:productLines[pl].Maintenance})%> </td>
+            </tr>
+            <%}%>
+
+            </tbody>
+            </table>
+        </div>
+        <%}%>
+        <!-- Product linee table end-->
+
+      <%}
+
+
+
+    drawVert('custpage_lista_summary1', arr);
+    
+    %>
+

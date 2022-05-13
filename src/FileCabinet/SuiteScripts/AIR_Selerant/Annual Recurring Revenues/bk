@@ -1,0 +1,72 @@
+
+
+  <% for (var i = 0; i < resultData.colkey.length; i++) {
+        var idColumn =   resultData.colkey[i].replace(' ','');
+        %>        
+        <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" 
+             data-label="<%=resultData.colkey[i]%>" 
+             onclick="l_sort(<%i>,'TEXT',false,null,'<%=idTable%>','<%=idColumn%>',null,0); setWindowChanged(window, true);  return false;">
+          <div class="listheader"><%=resultData.colkey[i]%><span id="<%=idTable+'dir'+i%>" class="listheadersort"></span></div>
+        </td>
+
+      <% }   %>
+
+  <% for (var i = 0; i < resultData.colvalue.length; i++) {
+        var idColumn =   resultData.colvalue[i].replace(' ','');
+        var colIndex = i+resultData.colkey.length;
+        %>        
+        <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" 
+             data-label="<%=resultData.colvalue[i]%>"  >
+          <div class="listheader"><%=resultData.colvalue[i]%><span id="<%=idTable+'dir'+colIndex%>" ></span></div>
+        </td>
+
+      <% } %>  
+
+      /*
+
+
+      var colKey = [];
+      for (var i =0; i< columns.length; i++) {
+          colKey.push(resultData.colkey[i])
+      }
+
+      var ret = {
+          colkey:columns.map((i)=>resultData.colkey[i]),
+          colvalue:resultData.colvalue
+          rowdata:[]
+      }
+      var map = {};
+      var iO = resultData.colkey.lengths;
+      rowdata.forEach(function (e){
+          var kVals = columns.map((i)=>e[i]);
+          var key = kVals.join('#');
+          var curVal = map[k];
+          if (curVal == null) {
+              curVal =  kVals.concat(resultData.colvalue.map((a)=>0));
+              map[k] = curVal
+          }
+          for (var i=0; i < colvalue.length; i++) {
+              curVal[i+columns.length] += e[i+iO];
+          }
+  
+      });
+  
+      for (k in map) {
+          ret.rowdata.push(map[k]);
+      }
+  */
+
+
+  resultData
+
+  <% 
+function createSummary(columns, resultData) { 
+    var ret = {
+        colkey:resultData.colkey,
+        colvalue:resultData.colvalue
+        rowdata:[]
+    }
+    return ret;
+}
+%>
+

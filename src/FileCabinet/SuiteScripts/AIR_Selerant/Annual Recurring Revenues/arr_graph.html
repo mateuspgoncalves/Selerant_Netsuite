@@ -1,0 +1,464 @@
+<style>
+  .card {
+      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+      transition: 0.3s;
+      border-radius: 10px;
+      margin-top: 20px;
+      margin-left: 20px;
+      margin-right: 20px;
+      width: 350px;
+      height: 170px;
+      font-family: 'Open Sans', sans-serif;
+  }
+  .bigcard {
+      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+      transition: 0.3s;
+      border-radius: 10px;
+      margin-top: 20px;
+      margin-left: 20px;
+      margin-right: 20px;
+      width: 350px;
+      height: 270px;
+      font-family: 'Open Sans', sans-serif;
+  }
+  .card_title {
+      font-size: 16px;
+      margin-bottom: 22px;
+      margin-top: 12px;
+  }
+  .card_content {
+      font-size: 40px;
+      margin: 0px;
+      text-align: center;
+  }
+  .card_description {
+      font-size: 12px;
+      margin-top: 22px;
+  }
+  .card:hover {
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+  img {
+      border-radius: 5px 5px 0 0;
+  }
+  .container {
+      padding: 2px 16px;
+  }
+  table, th, td {
+      /* border: 1px solid black; */
+      border-collapse: collapse;
+  }
+  .subtabblock {
+    border-radius: 0 0 13px 13px;
+  }
+  .bgsubtabbar {
+    border-radius: 13px 13px 0 0;
+  }
+</style>
+
+<%
+
+
+
+
+
+//var summary = su
+
+var labels = [];
+for (var i=0; i< 12;i++) {
+  labels.push(i+1);
+}
+
+labels= summary.colvalue.slice(1,15);
+
+var mrr = summary.rowdata[0].slice(1,15);
+
+console.log('resultDataTest', resultData)
+var itemTypeData = {"Saas":{previews:0,new:0,lost:0,  acv:0}, "Maintenance":{previews:0,new:0,lost:0,  acv:0}}
+for(var r =0; r< resultData.rowdata.length; r++){
+    if(!itemTypeData[ resultData.rowdata[r][1] ]){
+        itemTypeData[ resultData.rowdata[r][1]]  = {
+            previews:0,
+            new:0,
+            lost:0,
+            other:0,
+            acv:0
+        }
+    }
+    //itemTypeData[ resultData.rowdata[r][1] ].previews +=   resultData.rowdata[r].slice(8, 19).reduce((accumulator, curr) => accumulator + curr);
+    //itemTypeData[ resultData.rowdata[r][1] ].new +=   resultData.rowdata[r].slice(22, 33).reduce((accumulator, curr) => accumulator + curr);
+    //itemTypeData[ resultData.rowdata[r][1] ].lost +=   resultData.rowdata[r].slice(36, 47).reduce((accumulator, curr) => accumulator + curr);
+
+    debugger;
+    itemTypeData[ resultData.rowdata[r][1] ].previews +=   resultData.rowdata[r][21] * 12;
+    itemTypeData[ resultData.rowdata[r][1] ].acv +=   resultData.rowdata[r][22] * 12;
+    itemTypeData[ resultData.rowdata[r][1] ].new +=   Number(resultData.rowdata[r][37]) * 12 ;
+    itemTypeData[ resultData.rowdata[r][1] ].lost +=   Number(resultData.rowdata[r][52]) * 12 ;
+
+}
+for (var i in itemTypeData) {
+  var c = itemTypeData[ i ];
+  c.other = c.acv - c.previews -c.new - c.lost ;
+}
+console.log('summary',summary);
+console.log('rowdataTOCHECK',summary.rowdata[0]);
+var newR = summary.rowdata[0].slice(16,16+14);
+var lostR = summary.rowdata[0].slice(31);
+
+for (var i=0; i< mrr.length; i++) {
+  mrr[i]-=newR[i];
+}
+
+var arrMonthValues = []
+var newMonthValues = []
+var lostMonthValues = []
+var nrr = 0;
+
+console.log('rowDataTOCHECK',arr.rowData);
+console.log('mrrTOCHECK',mrr);
+
+for (var i=0; i< arr.rowData.length; i++) {
+  newMonthValues[i] = newR[i] * 12
+  if( arr.rowData[i].arr > 0 && arr.rowData[i].arr >= newMonthValues[i]) {
+      arrMonthValues[i] =arr.rowData[i].arr - newMonthValues[i];
+  } else {
+      arrMonthValues[i] = 0;
+  }
+  lostMonthValues[i] = lostR[i] *12
+
+}
+console.log('newRX',newR);
+console.log('lostRX',lostR);
+
+console.log('newMonthValues',newMonthValues);
+console.log('arrMonthValues',arrMonthValues);
+console.log('lostMonthValues',lostMonthValues);
+
+var arrKpi = 0;
+var inc = 0;
+var nrrPercent = 0;
+if ( arr.rowData.length >=12 ){
+  arrKpi = arr.rowData[12].arr;
+  var pastArr = arr.rowData[0].arr;
+  var lastMonthArr = arr.rowData[11].arr;
+  inc = Math.round(10000* ((pastArr == 0) ? 0: ((arrKpi- pastArr) / pastArr)) )/100;
+
+  var newYear = newR[12]*12;
+
+  nrrPercent =  Math.round(10000* ((lastMonthArr == 0) ? 0: (arrKpi - newYear) / lastMonthArr))/100;
+}
+
+
+var data = {
+labels: labels,
+datasets: [ {
+    label: 'ACV BoP + Other',
+    backgroundColor: '#1C4776',
+    borderColor: '#1C4776',
+    data: arrMonthValues,
+    stack: 'stacked',
+  },
+  {
+    label: 'New',
+    backgroundColor: '#5CB158',
+    borderColor: '#5CB158',
+    data: newMonthValues,
+    stack: 'stacked',
+  },
+  {
+    label: 'Churn',
+    backgroundColor: '#A52D43',
+    borderColor: '#A52D43',
+    data: lostMonthValues,
+    stack: 'stacked'
+  }]
+};
+
+var config = {
+type: 'bar',
+data: data,
+options: {
+  plugins: {
+    title: {
+      display: false,
+      text: 'ACV/NRR'
+    },
+  },
+  responsive: true
+}
+};
+
+%>
+
+
+<table style="width:100%">
+  <tr>
+      <td style="height: 130px;">
+          <div class="card">
+              <div class="container">
+                  <p class="card_title"><b>Annual Contract Value</b></p>
+                  <p class="card_content">€ <b><%=(!!arrKpi) ? format.format({type:format.Type.FLOAT,value: Math.round(arrKpi/1000)/1000}):''%></b>m</p>
+                  <p class="card_description"><%=((inc>0)?'+':'')+format.format({type:format.Type.FLOAT,value:inc})%>% compared to last year</p>
+              </div>
+          </div>
+      </td>
+      <td rowspan="5" style="width: 100%;">
+        <canvas id="myChart"></canvas>
+
+      </td>
+  </tr>
+  
+  
+  <tr>
+    <td style="vertical-align: top;height: 130px;">
+        <div class="card">
+            <div class="container">
+                <p class="card_title"><b></b></p>
+                <table id="custpage_lista_itemtype1split" width="100%" border="0" cellspacing="0" cellpadding="0" class="listtable listborder uir-list-table" style="position: relative;" <%='template="'+template+'"' %> >
+                  
+
+                <tr>
+                  <td  class="uir-list-row-cell listtexthl">ARR (Billed)</td>
+
+              
+                    <td  class="uir-list-row-cell listtexthl" data-label="Prev"  >
+                    <%=format.format({type:format.Type.CURRENCY,value: ( resultData.overview[12].arr- resultData.overview[12].unbilled   )}) %>
+                    </td>
+               
+                </tr>
+                <tr>
+                  <td  class="uir-list-row-cell listtexthl">CONTRACT (Unbilled)</td>
+
+              
+                    <td  class="uir-list-row-cell listtexthl" data-label="Prev"  >
+                    <%=format.format({type:format.Type.CURRENCY,value: (resultData.overview[12].unbilled - resultData.overview[12].pending )}) %>
+                    </td>
+               
+                </tr>
+                <tr>
+                  <td  class="uir-list-row-cell listtexthl">CONTRACT (Pending Approval)</td>
+
+              
+                    <td  class="uir-list-row-cell listtexthl" data-label="Prev"  >
+                    <%=format.format({type:format.Type.CURRENCY,value: (resultData.overview[12].pending )}) %>
+                    </td>
+               
+                </tr>
+                
+                <tr>
+                  <td  class="uir-list-row-cell listtexthl"><b>Total ACV</b></td>
+
+              
+                    <td  class="uir-list-row-cell listtexthl" data-label="Prev"  >
+                    <%=format.format({type:format.Type.CURRENCY,value: resultData.overview[12].arr}) %>
+                    </td>
+               
+                </tr>
+
+              </table>
+            </div>
+        </div>
+    </td>
+</tr>
+
+<!--
+  <tr>
+      <td style="height: 130px;">
+          <div class="card" style="height: 150px;">
+              <div class="container">
+                  <p class="card_title"><b>Net Revenue Retention</b></p>
+                  <p class="card_content"><b><%=((nrrPercent>0)?'+':'')+format.format({type:format.Type.FLOAT,value:nrrPercent})%>%</b></p>
+                  <p class="card_description"></p>
+              </div>
+          </div>
+      </td>
+  </tr>
+  -->
+
+  <tr>
+      <td style="vertical-align: top;height: 230px;">
+          <div class="bigcard">
+              <div class="container">
+                  <p class="card_title"><b>SaaS vs Maintenance</b></p>
+                  <table id="custpage_lista_itemtype1split" width="100%" border="0" cellspacing="0" cellpadding="0" class="listtable listborder uir-list-table" style="position: relative;" <%='template="'+template+'"' %> >
+                    <tr class="uir-machine-headerrow" id="custpage_lista_itemtype1header" >
+                      <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large"></td>
+
+
+                      <%
+                      for (type in itemTypeData ) {
+                      %>
+                    <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" data-label="Item Type"  >
+                    <div class="listheader"><%=type%></div>
+                    </td>
+                     <% } %>
+                     <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" data-label="Item Type"  >
+                      <div class="listheader">Total</div>
+                      </td>
+  
+                  </tr>
+
+                  <tr="custpage_lista_recordrow1" >
+                    <td  class="uir-list-row-cell listtexthl">ACV BoP</td>
+
+                  <%
+                    var tot = 0;
+                    for (type in itemTypeData ) {
+                       tot += itemTypeData[type].previews;
+                      %>
+                      <td  class="uir-list-row-cell listtexthl"
+                      data-label="Prev"  >
+                      <%=(!!itemTypeData[type].previews) ? format.format({type:format.Type.CURRENCY,value:itemTypeData[type].previews}):0%>
+                  </td>
+                    <% } %>
+                    <td  class="uir-list-row-cell listtexthl"
+                    data-label="Prev"  >
+                    <%=(!!tot)?format.format({type:format.Type.CURRENCY,value:tot}):0%>
+                    </td>
+                  </tr>
+                  <tr="custpage_lista_recordrow2" >
+                    <td  class="uir-list-row-cell listtexthl">New</td>
+
+                    <% 
+                     var tot = 0;
+                     for (type in itemTypeData ) {
+                      tot += itemTypeData[type].new; 
+                      %>
+                      <td  class="uir-list-row-cell listtexthl"
+                      data-label="New"  >
+                     <%=(!!itemTypeData[type].new) ? format.format({type:format.Type.CURRENCY,value:itemTypeData[type].new}):0%>
+                  </td>
+                    <% } %>
+                    <td  class="uir-list-row-cell listtexthl"
+                    data-label="Prev"  >
+                    <%=(!!tot)?format.format({type:format.Type.CURRENCY,value:tot}):0%>
+
+                    </td>
+                  </tr>
+                  <tr="custpage_lista_recordrow3" >
+                    <td  class="uir-list-row-cell listtexthl">Churn</td>
+                    <% 
+                    var tot = 0;
+                    for (type in itemTypeData ) {
+                      tot += itemTypeData[type].lost; 
+                       %>
+                      <td  class="uir-list-row-cell listtexthl"
+                      data-label="Lost"  >
+                      <%=(!!itemTypeData[type].lost) ? format.format({type:format.Type.CURRENCY,value:itemTypeData[type].lost}):0%>
+                  </td>
+                    <% } %>
+                    <td  class="uir-list-row-cell listtexthl"
+                    data-label="Prev"  >
+                    <%=(!!tot)?format.format({type:format.Type.CURRENCY,value:tot}):0%>
+
+                    </td>
+                  </tr>
+                  <tr="custpage_lista_recordrow2" >
+                    <td  class="uir-list-row-cell listtexthl">Other</td>
+
+                    <% 
+                     var tot = 0;
+                     for (type in itemTypeData ) {
+                      tot += itemTypeData[type].other; 
+                      %>
+                      <td  class="uir-list-row-cell listtexthl"
+                      data-label="Other"  >
+                     <%=(!!itemTypeData[type].other) ? format.format({type:format.Type.CURRENCY,value:itemTypeData[type].other}):0%>
+                  </td>
+                    <% } %>
+                    <td  class="uir-list-row-cell listtexthl"
+                    data-label="Other"  >
+                    <%=(!!tot)?format.format({type:format.Type.CURRENCY,value:tot}):0%>
+
+                    </td>
+                  </tr>
+                  <tr="custpage_lista_recordrow2" >
+                    <td  class="uir-list-row-cell listtexthl">ACV EoP</td>
+
+                    <% 
+                     var tot = 0;
+                     for (type in itemTypeData ) {
+                      tot += itemTypeData[type].acv; 
+                      %>
+                      <td  class="uir-list-row-cell listtexthl"
+                      data-label="Other"  >
+                     <%=(!!itemTypeData[type].acv) ? format.format({type:format.Type.CURRENCY,value:itemTypeData[type].acv}):0%>
+                  </td>
+                    <% } %>
+                    <td  class="uir-list-row-cell listtexthl"
+                    data-label="Other"  >
+                    <%=(!!tot)?format.format({type:format.Type.CURRENCY,value:tot}):0%>
+
+                    </td>
+                  </tr>
+
+
+                </table>
+              </div>
+          </div>
+      </td>
+  </tr>
+
+  <!--
+  <tr>
+    <td style="vertical-align: top;height: 130px;">
+        <div class="card" style="height: 145px;">
+            <div class="container">
+                <table id="custpage_lista_itemtype1split" width="100%" border="0" cellspacing="0" cellpadding="0" class="listtable listborder uir-list-table" style="position: relative;" <%='template="'+template+'"' %> >
+
+                <tr="custpage_lista_recordrow1" >
+                  <td class="listheadertextb uir-column-large" style="text-align: center; vertical-align:middle">ACV BoP</td>
+                    <td  class="uir-list-row-cell listtexthl"
+                    data-label="Prev" style="text-align:center; padding-top: 7px"  >
+                    <%=format.format({type:format.Type.CURRENCY,value:arr.rowData[11].arr})%>
+                </td>
+                </tr>
+                <tr="custpage_lista_recordrow1" >
+                  <td class="listheadertextb uir-column-large" style="text-align: center; vertical-align:middle">New</td>
+                  <td  class="uir-list-row-cell listtexthl"
+                  data-label="Prev" style="text-align:center; padding-top: 7px"  >
+                  <%=format.format({type:format.Type.CURRENCY,value:arr.rowData[12].newR * 12})%>
+                  </td>
+                </tr>
+                <tr="custpage_lista_recordrow1" >
+                  <td class="listheadertextb uir-column-large" style="text-align: center; vertical-align:middle">Churn</td>
+                  <td  class="uir-list-row-cell listtexthl"
+                  data-label="Prev" style="text-align:center; padding-top: 7px" >
+                  <%=format.format({type:format.Type.CURRENCY,value:arr.rowData[12].l * 12})%>
+                  </td>
+                </tr>
+                <%
+                  var difference = arr.rowData[12].arr - arr.rowData[11].arr;
+                  var correctValue = difference - (arr.rowData[12].newR * 12) - (arr.rowData[12].l * 12) 
+                %>
+                <tr="custpage_lista_recordrow1" >
+                  <td class="listheadertextb uir-column-large" style="text-align: center; vertical-align:middle">Other</td>
+                  <td  class="uir-list-row-cell listtexthl"
+                  data-label="Prev" style="text-align:center; padding-top: 7px" >
+                  <%=format.format({type:format.Type.CURRENCY,value:correctValue})%>
+                  </td>
+                </tr>
+                <tr="custpage_lista_recordrow1" >
+                  <td class="listheadertextb uir-column-large" style="text-align: center; vertical-align:middle">ACV EoP</td>
+                  <td  class="uir-list-row-cell listtexthl"
+                  data-label="Prev" style="text-align:center; padding-top: 7px" >
+                  <%=format.format({type:format.Type.CURRENCY,value:arr.rowData[12].arr})%>
+                  </td>
+                </tr>
+
+              </table>
+            </div>
+        </div>
+    </td>
+  </tr>
+  -->
+
+</table>
+
+
+    <script>
+        console.log("config object: ",<%=JSON.stringify(config)%>);
+        var myChart1 = new Chart(document.getElementById("myChart"),<%=JSON.stringify(config)%>);
+
+    </script>
+<!-- Graph end-->

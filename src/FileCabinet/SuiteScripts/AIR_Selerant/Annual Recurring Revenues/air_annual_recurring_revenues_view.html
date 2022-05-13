@@ -1,0 +1,56 @@
+<!--<form action="javascript:void(0)" id="custpage_lista_record_form" name="custpage_lista_record_form" style="margin: 0"> --> 
+  
+  <% if (!data.onlyLines){ %>
+  <div class="uir-machine-table-container" id="custpage_lista_record_div">
+    <table id="custpage_lista_record_splits" width="100%" border="0" cellspacing="0" cellpadding="0" class="listtable listborder uir-list-table" style="position: relative;">
+      <tbody>
+      <tr class="uir-machine-headerrow" id="custpage_lista_recordheader">
+        <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" data-label="<%=data.entityLabel%>" onclick="l_sort(0,'TEXT',false,null,'custpage_lista_record','custpage_lista_record_entity',null,0); setWindowChanged(window, true); return false;">
+          <div class="listheader"><%=data.entityLabel%><span id="custpage_lista_recorddir0" class="listheadersort"></span></div>
+        </td>
+       
+        <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" data-label="<%=data.itemLabel%>" onclick="l_sort(1,'TEXT',false,null,'custpage_lista_record','custpage_lista_record_item',null,1); setWindowChanged(window, true); return false;">
+          <div class="listheader"><%=data.itemLabel%><span id="custpage_lista_recorddir1" class="listheadersort"></span></div>
+        </td>
+
+        <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" data-label="<%=data.itemLabel%>" onclick="l_sort(1,'TEXT',false,null,'custpage_lista_record','custpage_lista_record_item',null,1); setWindowChanged(window, true); return false;">
+          <div class="listheader"><%=data.soLabel%><span id="custpage_lista_recorddir1" class="listheadersort"></span></div>
+        </td>
+       
+        <%
+        var colIndex = data.customergroup ? 1 : 2;
+        for(d in data.periods){
+        %>
+        <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" data-label="<%=data.periods[d].n%>" onclick="l_sort(<%=colIndex%>,'CURRENCY',false,null,'custpage_lista_record','custpage_lista_record_column<%=d%>',null,<%=colIndex%>); setWindowChanged(window, true); return false;">
+          <div class="listheader"><%=data.periods[d].n%><span id="custpage_lista_recorddir<%=colIndex%>" class="listheadersort"></span></div>
+        </td>
+        <%
+        colIndex++;
+        }
+        %>
+      </tr>
+      <% } %>      
+      <%for(var i=0; i < data.values.length; i++ ){ var evenOrOdd = i%2 == 0? 'even' : 'odd'; %>
+      <tr class="uir-list-row-tr uir-list-row-<%=evenOrOdd%>" id="custpage_lista_recordrow<%=i%>">
+        <td class="uir-list-row-cell listtexthl" 
+        <% if (data.detail=='C') { %>
+        onclick="openDetail(this)" 
+        <% } %>
+        entityid="<%=data.values[i].entityid%>"><%=data.values[i].entity%></td>
+        <td class="uir-list-row-cell listtexthl"><%=data.values[i].item%></td>
+        <td class="uir-list-row-cell listtexthl"><%=data.values[i].tranid%></td>
+        <%for(d in data.periods){%>
+        <td class="uir-list-row-cell listtextrt uir-list-row-cell">
+          <%=data.format.format({type:data.format.Type.CURRENCY, value:data.values[i].periods[d] })%>
+        </td>
+        <%}%>
+      </tr>
+      <%}%>
+<% if (!data.onlyLines){ %>
+        
+      </tbody>
+      <object type="text/html" tabindex="-1" style="display:block; position:absolute; left:0; top:0; width:100%; height:100%; overflow:hidden; pointer-events:none; z-index:-1; opacity:0;" data="about:blank"></object>
+    </table>
+  </div>
+<% } %>
+<!-- </form> -->

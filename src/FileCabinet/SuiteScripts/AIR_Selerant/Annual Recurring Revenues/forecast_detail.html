@@ -1,0 +1,56 @@
+<% function draw(idTable, resultData) { %>
+
+
+
+<div class="uir-machine-table-container" id="<%=idTable%>" >
+    <table id="<%=idTable+'split'%>" width="100%" border="0" cellspacing="0" cellpadding="0" class="listtable listborder uir-list-table" style="position: relative;">
+      <tbody>
+      <tr class="uir-machine-headerrow" id="<%=idTable+'header'%>">
+        <% for (var i = 0; i < resultData.colkey.length; i++) {
+            var idColumn =   resultData.colkey[i].replace(' ','');
+            %>        
+            <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" 
+                 data-label="<%=resultData.colkey[i]%>" 
+                 onclick="l_sort(<%=i%>,'TEXT',false,null,'<%=idTable%>','<%=idColumn%>',null,0); setWindowChanged(window, true);  return false;">
+              <div class="listheader"><%=resultData.colkey[i]%><span id="<%=idTable+'dir'+i%>" class="listheadersort"></span></div>
+            </td>
+    
+          <% }   %>
+    
+          <% for (var i = 0; i < resultData.colvalue.length; i++) {
+            var idColumn =   resultData.colvalue[i].replace(' ','');
+            var colIndex = i+resultData.colkey.length;
+            %>        
+            <td height="100%" style="cursor:hand;" class="listheadertd listheadertextb uir-column-large" 
+                 data-label="<%=resultData.colvalue[i]%>"  >
+              <div class="listheader"><%=resultData.colvalue[i]%><span id="<%=idTable+'dir'+colIndex%>" ></span></div>
+            </td>
+    
+          <% } %>  
+
+    </tr>
+
+    <% for (var i = 0; i < resultData.rowdata.length; i++) {
+        var row = resultData.rowdata[i];
+        var evenOrOdd = i%2 == 0? 'even' : 'odd'; 
+    %>
+    <tr class="uir-list-row-tr uir-list-row-<%=evenOrOdd%>" id="custpage_lista_recordrow<%=i%>">
+      <% for (var iD = 0; iD <  resultData.colkey.length; iD++) { %>
+        <td class="uir-list-row-cell listtexthl"><%=row[iD]%></td>
+    <% } %>
+    <% for (var iD = resultData.colkey.length; iD <  row.length; iD++) { %>
+        <td class="uir-list-row-cell listtexthl" style="text-align:right"><%=format.format({type:format.Type.CURRENCY,value:row[iD]})%></td>
+    <% } %>
+</tr>
+        <% } %>  
+
+    </tbody>
+    </table>
+    </div>
+
+    <%}
+
+    draw('custpage_lista_detail', resultData);
+    
+    %>
+

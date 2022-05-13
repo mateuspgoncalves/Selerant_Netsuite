@@ -1,0 +1,208 @@
+<style>
+    .colored-head-cell {
+        font-size: 11px;
+        font-weight: bold;
+        text-align: center; 
+        vertical-align:middle !important;
+        min-width: 75px;
+        height: 28px;
+    }
+    .colored-normal-cell {
+        vertical-align: top;
+        padding: 2px 5px 2px 5px;
+    }
+  </style>
+
+<%function drawOutput(idTable, arr) {%>
+  
+    <div class="uir-machine-table-container" id="<%=idTable%>" style="border-radius: 15px;">
+      <table id="<%=idTable+'split'%>" width="100%" border="0" cellspacing="0" cellpadding="0" class="listtable listborder uir-list-table" style="position: relative;" <%='template="'+template+'"' %> >
+        <tbody>
+
+        <tr class="uir-machine-headerrow" id="<%=idTable+'_header'%>">
+            <td height="100%" class="listheadertextb uir-column-large" style="text-align: center; vertical-align:middle !important" >
+                <div class="listheader"></div>
+            </td>
+            <%
+            for (var i in arr.rowData) {
+            %>
+                <td height="100%" class="listheadertextb uir-column-large" style="text-align: center; vertical-align:middle !important"  >
+                     <div class="listheader"><%=arr.rowData[i].label%></div>
+                </td>
+            <%
+            }
+            %>
+        </tr>
+        <tr id="<%=idTable+'_prev'%>" style="background-color:#1C4776; color: white;" >
+                <td class="colored-head-cell"  >BoP ACV</td>
+                <%
+                for (var i in arr.rowData) {
+                %>
+                    <td class="colored-normal-cell" style="text-align: right; vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value: arr.rowData[i].pastArr/1000})%></td>
+
+                <%
+                }
+                %>
+        </tr>
+        
+        <tr id="<%=idTable+'_lost'%>" style="background-color: #A52D43;color:white" >
+            <td class="colored-head-cell"  >Churn</td>
+            <%
+            for (var i in arr.rowData) {
+            %>
+                <td class="colored-normal-cell  " style="text-align: right; vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:(arr.rowData[i].l * 12)/1000})%></td>
+            <%
+            }
+            %>
+        </tr>
+<!--
+        <tr id="<%=idTable+'_lost'%>" style="background-color: #A52D43;color:white" >
+            <td class="colored-head-cell"  >Churn 2</td>
+            <% for (var i in  resultData.overview) { %>
+                <td class="colored-normal-cell  " style="text-align: right; vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:(resultData.overview[i].churn)/1000})%></td>
+            <% } %>
+        </tr>
+-->        
+        <tr id="<%=idTable+'_other'%>"  >
+            <td class="listheadertextb uir-column-large" style="text-align: center; vertical-align:middle !important"  >Downsell</td>
+            <% for (var i in  resultData.overview) { %>
+                <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:(resultData.overview[i].downsell)/1000})%></td>
+            <%}%>
+            <!-- <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"   style=" vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt" style=" vertical-align:middle !important"  ><%=format.format({type:format.Type.CURRENCY, value:0})%></td> -->
+        </tr>
+        <tr id="<%=idTable+'_other'%>"  >
+            <td class="listheadertextb uir-column-large" style="text-align: center; vertical-align:middle !important"  >Price</td>
+            <%
+            for (var i in resultData.overview) {
+            %>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:resultData.overview[i].price/1000})%></td>
+            <%
+            }
+            %>
+
+          
+        </tr>
+        <tr id="<%=idTable+'_other'%>"   >
+            <td class="listheadertextb uir-column-large " style="text-align: center; vertical-align:middle !important"  >FX</td>
+
+            <%
+            for (var i in resultData.overview) {
+            %>
+                <td class="colored-normal-cell listtextrt" style="background-color:rgb(240, 240, 176) !important; text-align: right; vertical-align:middle !important;"><%=format.format({type:format.Type.CURRENCY, value:(resultData.overview[i].fx )/1000})%></td>
+
+            <%
+            }
+            %>
+
+        </tr>
+        <tr id="<%=idTable+'_other'%>"  >
+            <td class="listheadertextb uir-column-large" style="text-align: center; vertical-align:middle !important"  >Upsell</td>
+            <% for (var i in resultData.overview) { %>
+                <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:(resultData.overview[i].upsell)/1000})%></td>
+            <%}%>
+
+            <!-- <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt" style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt" style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt" style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt" style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt" style=" vertical-align:middle !important" ><%=format.format({type:format.Type.CURRENCY, value:0})%></td>
+            <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:0})%></td> -->
+        </tr>
+        <tr id="<%=idTable+'_other'%>"  >
+            <td class="listheadertextb uir-column-large" style="text-align: center; vertical-align:middle !important"  >Cross-sell</td>
+
+            <% for (var i in resultData.overview) { %>
+                <td class="uir-list-row-cell listtextrt"  style=" vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:(resultData.overview[i].crosssell)/1000})%></td>
+            <%}%>
+
+
+          
+        </tr>
+    <!--
+        <tr id="<%=idTable+'_new'%>" style="background-color:#5CB158" >
+            <td class="colored-head-cell" >New2</td>
+            <% for (var i in  resultData.overview) { %>
+
+                <td class="colored-normal-cell" style="text-align: right; vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:(resultData.overview[i].new )/1000})%></td>
+
+            <%
+            }
+            %>
+        </tr>
+        -->        
+        <tr id="<%=idTable+'_new'%>" style="background-color:#5CB158" >
+            <td class="colored-head-cell" >New</td>
+            <%
+            for (var i in arr.rowData) {
+            %>
+                <td class="colored-normal-cell" style="text-align: right; vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:(arr.rowData[i].newR * 12)/1000})%></td>
+
+            <%
+            }
+            %>
+        </tr>
+        <tr id="<%=idTable+'_total'%>" style="background-color:#1C4776; color: white;" >
+            <td class="colored-head-cell" >EoP ACV</td>
+            <%
+            for (var i in arr.rowData) {
+            %>
+                <td class="colored-normal-cell"  style="text-align: right;  vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:arr.rowData[i].arr/1000})%></td>
+
+            <%
+            }
+            %>
+        </tr>
+        <tr id="<%=idTable+'_new'%>" style="background-color:#ffffff" >
+            <td class="colored-head-cell" >Less: ACV In Implementation</td>
+            <% for (var i in  resultData.overview) { %>
+
+                <td class="colored-normal-cell" style="text-align: right; vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:(resultData.overview[i].unbilled )/1000})%></td>
+
+            <%
+            }
+            %>
+        </tr>
+        <tr id="<%=idTable+'_new'%>" style="background-color:#1C4776; color: white;" >
+            <td class="colored-head-cell" >EeP ARR</td>
+            <% for (var i in  resultData.overview) { %>
+
+                <td class="colored-normal-cell" style="text-align: right; vertical-align:middle !important"><%=format.format({type:format.Type.CURRENCY, value:(resultData.overview[i].arr - resultData.overview[i].unbilled )/1000})%></td>
+
+            <%
+            }
+            %>
+        </tr>
+  
+      </tbody>
+      </table>
+    </div>
+
+      <%}
+
+
+      console.log('arrOutput', arr);
+      drawOutput('custpage_lista_output', arr);
+    
+    %>
+
